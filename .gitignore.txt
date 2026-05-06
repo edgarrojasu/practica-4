@@ -1,0 +1,6 @@
+# Ignorar carpetas específicas (por nombre)
+/.qtcreator/
+/build/
+
+# Ignorar todos los archivos PDF en cualquier ubicación
+*.pdf
