@@ -3,6 +3,7 @@
 
 #include "Router.h"
 #include <map>
+#include <string>
 
 class Red {
 private:
@@ -18,6 +19,7 @@ public:
     void limpiarVecinos(int id);
     void calcularCaminos(int origen);
     void actualizarTablas();
+    void cargarDesdeArchivo(const string& archivo); // carga topologia desde archivo
 };
 
 #endif

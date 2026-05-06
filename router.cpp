@@ -4,10 +4,10 @@
 #include <climits>
 #include <algorithm>
 
-Router::Router(int id) : idRouter(id), distancia(INT_MAX), visitado(false), previo(nullptr) {} //
+Router::Router(int id) : idRouter(id), distancia(INT_MAX), visitado(false), previo(nullptr) {}
 
 void Router::nuevoVecino(Router* vecino, int costo) {
-    vecinos.emplace_back(vecino, costo); // en vez de push_back, porque construyo el elemento que es un par
+    vecinos.emplace_back(vecino, costo);
 }
 
 void Router::confDistancia(int dist) {
@@ -17,31 +17,50 @@ void Router::confDistancia(int dist) {
 void Router::reinicio() {
     distancia = INT_MAX;
     visitado = false;
+    previo = nullptr;
+}
+
+void Router::mostrarTabla(const map<int, Router*>& routers) {
+    cout << "Tabla de costos del Router " << char('A' + idRouter) << ":" << endl;
+    cout << "  Destino | Costo" << endl;
+    cout << "  --------|------" << endl;
+    for (auto& par : routers) {
+        int destId = par.first;
+        int costo = -1;
+        if (tablaCostos.count(destId))
+            costo = tablaCostos.at(destId);
+
+        cout << "     " << char('A' + destId) << "    |  ";
+        if (costo == INT_MAX || costo == -1)
+            cout << "inf" << endl;
+        else
+            cout << costo << endl;
+    }
+    cout << endl;
 }
 
 void dijkstra(Router* fuente) {
-    fuente->confDistancia(0); //(*fuente).confDistancia(0); es equivalente con dereferenciación
+    fuente->confDistancia(0);
 
-    priority_queue<pair<int, Router*>> pq; //es una cola que tiene un valor adicional(prioridad), el elemento con mayor prio se guarda al inicio
+    // priority_queue es max-heap; usamos costos negativos para simular min-heap
+    priority_queue<pair<int, Router*>> pq;
     pq.push({0, fuente});
 
     while (!pq.empty()) {
-        Router* actual = pq.top().second; //Tomo el valor del router del primer elemento de la cola
+        Router* actual = pq.top().second;
         pq.pop();
 
-
         if (actual->visitado) continue;
-
         actual->visitado = true;
 
-        for (auto& vec : actual->vecinos) { //leo los vecinos del router actual
-            Router* sigRouter = vec.first; //vecinos es un vector de pares, el primero es un router
-            int costoBorde = vec.second; //lo que cuesta el borde a ese primer vecino
+        for (auto& vec : actual->vecinos) {
+            Router* sigRouter = vec.first;
+            int costoBorde = vec.second;
 
-            int nuevaDistancia = actual->distancia + costoBorde; //La distancia es un valor de la fuente al router
+            int nuevaDistancia = actual->distancia + costoBorde;
             if (nuevaDistancia < sigRouter->distancia) {
                 sigRouter->confDistancia(nuevaDistancia);
-                sigRouter->previo = actual;  // <- Guardar el nodo anterior
+                sigRouter->previo = actual;
                 pq.push({-nuevaDistancia, sigRouter});
             }
         }
@@ -49,16 +68,26 @@ void dijkstra(Router* fuente) {
 }
 
 void imprimirCamino(Router* destino) {
+    if (destino == nullptr) {
+        cout << "Router destino no encontrado." << endl;
+        return;
+    }
+    if (destino->distancia == INT_MAX) {
+        cout << "No hay camino al destino " << char('A' + destino->idRouter) << endl;
+        return;
+    }
+
     vector<Router*> camino;
     for (Router* r = destino; r != nullptr; r = r->previo) {
         camino.push_back(r);
     }
     reverse(camino.begin(), camino.end());
+
     cout << "Camino mas corto: ";
     for (size_t i = 0; i < camino.size(); ++i) {
-        cout << char('A' + camino[i]->idRouter);  // Asumimos que 0->A, 1->B, ...
+        cout << char('A' + camino[i]->idRouter);
         if (i != camino.size() - 1)
             cout << " -> ";
     }
-    cout << endl;
+    cout << " | Costo: " << destino->distancia << endl;
 }
