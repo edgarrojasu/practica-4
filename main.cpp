@@ -3,11 +3,13 @@
 
 using namespace std;
 
-int main() {
+int main()
+{
     Red red;
     int opcion;
 
-    do {
+    do
+    {
         cout << "\n--- MENU ---";
         cout << "\n1. Agregar router";
         cout << "\n2. Conectar routers";
@@ -20,14 +22,16 @@ int main() {
         cout << "Opcion: ";
         cin >> opcion;
 
-        if (opcion == 1) {
+        if (opcion == 1)
+        {
             int id;
             cout << "ID del router (0=A, 1=B, ...): ";
             cin >> id;
             red.agregarRouter(id);
             red.actualizarTablas();
         }
-        else if (opcion == 2) {
+        else if (opcion == 2)
+        {
             int a, b, costo;
             cout << "Router 1 (ID): "; cin >> a;
             cout << "Router 2 (ID): "; cin >> b;
@@ -35,7 +39,8 @@ int main() {
             red.conectar(a, b, costo);
             red.actualizarTablas();
         }
-        else if (opcion == 3) {
+        else if (opcion == 3)
+        {
             int id;
             cout << "Router a eliminar (ID): ";
             cin >> id;
@@ -49,17 +54,20 @@ int main() {
             red.eliminarConexion(a, b);
             red.actualizarTablas();
         }
-        else if (opcion == 5) {
+        else if (opcion == 5)
+        {
             red.mostrarRed();
         }
-        else if (opcion == 6) {
+        else if (opcion == 6)
+        {
             int origen, destino;
             cout << "Origen (ID): ";  cin >> origen;
             cout << "Destino (ID): "; cin >> destino;
             red.calcularCaminos(origen);
             imprimirCamino(red.obtenerRouter(destino));
         }
-        else if (opcion == 7) {
+        else if (opcion == 7)
+        {
             string archivo;
             cout << "Nombre del archivo: ";
             cin >> archivo;
