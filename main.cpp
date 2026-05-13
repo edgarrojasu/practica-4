@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Red.h"
+#include "menu.h"
 
 using namespace std;
 
@@ -13,17 +14,8 @@ int main()
 
         do
         {
-            cout << "\n--- MENU ---";
-            cout << "\n1. Agregar router";
-            cout << "\n2. Conectar routers";
-            cout << "\n3. Eliminar router";
-            cout << "\n4. Eliminar conexion";
-            cout << "\n5. Mostrar red y tablas de costos";
-            cout << "\n6. Calcular camino entre dos routers";
-            cout << "\n7. Cargar red desde archivo";
-            cout << "\n0. Salir\n";
-            cout << "Opcion: ";
-            cin >> opcion;
+
+            opcion = menu();
 
             switch (opcion)
             {

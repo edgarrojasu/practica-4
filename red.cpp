@@ -138,8 +138,7 @@ void Red::cargarDesdeArchivo(const string& archivo)
     ifstream f(archivo);
     if (!f.is_open())
     {
-        cout << "Error: no se pudo abrir el archivo '" << archivo << "'" << endl;
-        return;
+        throw runtime_error("No se pudo abrir el archivo");
     }
 
     string linea;
