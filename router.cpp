@@ -65,7 +65,8 @@ void dijkstra(Router* fuente)
             int costoBorde = vec.second;
 
             int nuevaDistancia = actual->distancia + costoBorde;
-            if (nuevaDistancia < sigRouter->distancia) {
+            if (nuevaDistancia < sigRouter->distancia)
+            {
                 sigRouter->confDistancia(nuevaDistancia);
                 sigRouter->previo = actual;
                 pq.push({-nuevaDistancia, sigRouter});

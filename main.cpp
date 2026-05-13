@@ -22,15 +22,18 @@ int main()
         cout << "Opcion: ";
         cin >> opcion;
 
-        if (opcion == 1)
+        switch (opcion)
+        {
+        case 1:
         {
             int id;
             cout << "ID del router (0=A, 1=B, ...): ";
             cin >> id;
             red.agregarRouter(id);
             red.actualizarTablas();
+            break;
         }
-        else if (opcion == 2)
+        case 2:
         {
             int a, b, costo;
             cout << "Router 1 (ID): "; cin >> a;
@@ -38,40 +41,58 @@ int main()
             cout << "Costo: ";         cin >> costo;
             red.conectar(a, b, costo);
             red.actualizarTablas();
+            break;
         }
-        else if (opcion == 3)
+        case 3:
         {
             int id;
             cout << "Router a eliminar (ID): ";
             cin >> id;
             red.eliminarRouter(id);
             red.actualizarTablas();
+            break;
         }
-        else if (opcion == 4) {
+        case 4:
+        {
             int a, b;
             cout << "Router 1 (ID): "; cin >> a;
             cout << "Router 2 (ID): "; cin >> b;
             red.eliminarConexion(a, b);
             red.actualizarTablas();
+            break;
         }
-        else if (opcion == 5)
+        case 5:
         {
             red.mostrarRed();
+            break;
         }
-        else if (opcion == 6)
+        case 6:
         {
             int origen, destino;
             cout << "Origen (ID): ";  cin >> origen;
             cout << "Destino (ID): "; cin >> destino;
             red.calcularCaminos(origen);
             imprimirCamino(red.obtenerRouter(destino));
+            break;
         }
-        else if (opcion == 7)
+        case 7:
         {
             string archivo;
             cout << "Nombre del archivo: ";
             cin >> archivo;
             red.cargarDesdeArchivo(archivo);
+            break;
+        }
+        case 0:
+        {
+            cout << "Saliendo..." << endl;
+            break;
+        }
+        default:
+        {
+            cout << "Opcion invalida. Intente de nuevo." << endl;
+            break;
+        }
         }
 
     } while (opcion != 0);
