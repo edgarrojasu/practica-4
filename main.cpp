@@ -7,6 +7,8 @@ int main()
 {
     Red red;
     int opcion;
+    string archivo;
+    archivo = "conexiones.txt";
 
     do
     {
@@ -77,9 +79,6 @@ int main()
         }
         case 7:
         {
-            string archivo;
-            cout << "Nombre del archivo: ";
-            cin >> archivo;
             red.cargarDesdeArchivo(archivo);
             break;
         }
