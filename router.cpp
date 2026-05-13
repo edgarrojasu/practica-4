@@ -79,13 +79,11 @@ void imprimirCamino(Router* destino)
 {
     if (destino == nullptr)
     {
-        cout << "Router destino no encontrado." << endl;
-        return;
+        throw runtime_error("Router no encontrado");
     }
     if (destino->distancia == INT_MAX)
     {
-        cout << "No hay camino al destino " << char('A' + destino->idRouter) << endl;
-        return;
+        throw runtime_error("No hay ruta disponible");
     }
 
     vector<Router*> camino;
