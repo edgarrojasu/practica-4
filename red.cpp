@@ -21,6 +21,24 @@ void Red::conectar(int id1, int id2, int costo)
 
     if (r1 && r2)
     {
+        auto& vecinos1 = r1->vecinos;
+        for (auto it = vecinos1.begin(); it != vecinos1.end(); )
+        {
+            if (it->first->idRouter == id2)
+                it = vecinos1.erase(it);
+            else
+                ++it;
+        }
+
+        auto& vecinos2 = r2->vecinos;
+        for (auto it = vecinos2.begin(); it != vecinos2.end(); )
+        {
+            if (it->first->idRouter == id1)
+                it = vecinos2.erase(it);
+            else
+                ++it;
+        }
+
         r1->nuevoVecino(r2, costo);
         r2->nuevoVecino(r1, costo);
     }
