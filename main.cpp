@@ -39,14 +39,22 @@ int main()
             {
                 case 1:
                 {
+<<<<<<< HEAD
                     int id = leerLetraRouter("Letra del router (a, b, c, ...): ");
                     if (id == -1) break;
                     red.agregarRouter(id);
+=======
+                    string letra;
+                    cout << "Letra del router (a, b, c, ...): ";
+                    cin >> letra;
+                    red.agregarRouter(letra);
+>>>>>>> extratemporal
                     red.actualizarTablas();
                     break;
                 }
                 case 2:
                 {
+<<<<<<< HEAD
                     int a = leerLetraRouter("Router 1 (letra): ");
                     if (a == -1) break;
                     int b = leerLetraRouter("Router 2 (letra): ");
@@ -60,24 +68,44 @@ int main()
                         cin.ignore(10000, '\n');
                         break;
                     }
+=======
+                    string a, b;
+                    int costo;
+                    cout << "Router 1 (letra): "; cin >> a;
+                    cout << "Router 2 (letra): "; cin >> b;
+                    cout << "Costo: ";            cin >> costo;
+>>>>>>> extratemporal
                     red.conectar(a, b, costo);
                     red.actualizarTablas();
                     break;
                 }
                 case 3:
                 {
+<<<<<<< HEAD
                     int id = leerLetraRouter("Letra del router a eliminar: ");
                     if (id == -1) break;
                     red.eliminarRouter(id);
+=======
+                    string letra;
+                    cout << "Router a eliminar (letra): ";
+                    cin >> letra;
+                    red.eliminarRouter(letra);
+>>>>>>> extratemporal
                     red.actualizarTablas();
                     break;
                 }
                 case 4:
                 {
+<<<<<<< HEAD
                     int a = leerLetraRouter("Router 1 (letra): ");
                     if (a == -1) break;
                     int b = leerLetraRouter("Router 2 (letra): ");
                     if (b == -1) break;
+=======
+                    string a, b;
+                    cout << "Router 1 (letra): "; cin >> a;
+                    cout << "Router 2 (letra): "; cin >> b;
+>>>>>>> extratemporal
                     red.eliminarConexion(a, b);
                     red.actualizarTablas();
                     break;
@@ -89,10 +117,16 @@ int main()
                 }
                 case 6:
                 {
+<<<<<<< HEAD
                     int origen = leerLetraRouter("Origen (letra): ");
                     if (origen == -1) break;
                     int destino = leerLetraRouter("Destino (letra): ");
                     if (destino == -1) break;
+=======
+                    string origen, destino;
+                    cout << "Origen (letra): ";  cin >> origen;
+                    cout << "Destino (letra): "; cin >> destino;
+>>>>>>> extratemporal
                     red.calcularCaminos(origen);
                     imprimirCamino(red.obtenerRouter(destino));
                     break;

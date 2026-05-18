@@ -3,24 +3,58 @@
 #include <fstream>
 #include <sstream>
 #include <climits>
+#include <cctype>
 
 using namespace std;
 
-void Red::agregarRouter(int id)
+// ── Validacion interna ────────────────────────────────────────────────────────
+
+int Red::letraAIndice(const string& token, bool desdeArchivo, int numLinea)
 {
-    if (routers.count(id) == 0)
+    if (token.size() != 1 || !isalpha((unsigned char)token[0]))
     {
-        routers[id] = new Router(id);
+        if (desdeArchivo)
+        {
+            throw runtime_error(
+                "Linea " + to_string(numLinea) +
+                ": identificador de router invalido '" + token +
+                "'. Se esperaba una sola letra (a-z / A-Z)."
+            );
+        }
+        else
+        {
+            cout << "Error: el identificador debe ser una sola letra (a-z). "
+                 << "Volviendo al menu." << endl;
+            return -1;
+        }
     }
+    return tolower((unsigned char)token[0]) - 'a';
 }
 
-void Red::conectar(int id1, int id2, int costo)
+// ── Metodos publicos ──────────────────────────────────────────────────────────
+
+void Red::agregarRouter(const string& letra)
 {
+    int id = letraAIndice(letra);
+    if (id == -1) return;
+
+    if (routers.count(id) == 0)
+        routers[id] = new Router(id);
+}
+
+void Red::conectar(const string& letra1, const string& letra2, int costo)
+{
+    int id1 = letraAIndice(letra1);
+    if (id1 == -1) return;
+    int id2 = letraAIndice(letra2);
+    if (id2 == -1) return;
+
     Router* r1 = obtenerRouter(id1);
     Router* r2 = obtenerRouter(id2);
 
     if (r1 && r2)
     {
+<<<<<<< HEAD
         // Eliminar conexion previa entre estos dos routers si existia
         auto& vecinos1 = r1->vecinos;
         for (auto it = vecinos1.begin(); it != vecinos1.end(); )
@@ -29,15 +63,28 @@ void Red::conectar(int id1, int id2, int costo)
                 it = vecinos1.erase(it);
             else
                 ++it;
+=======
+        // Eliminar conexion previa si existia
+        auto& vecinos1 = r1->vecinos;
+        for (auto it = vecinos1.begin(); it != vecinos1.end(); )
+        {
+            if (it->first->idRouter == id2) it = vecinos1.erase(it);
+            else ++it;
+>>>>>>> extratemporal
         }
 
         auto& vecinos2 = r2->vecinos;
         for (auto it = vecinos2.begin(); it != vecinos2.end(); )
         {
+<<<<<<< HEAD
             if (it->first->idRouter == id1)
                 it = vecinos2.erase(it);
             else
                 ++it;
+=======
+            if (it->first->idRouter == id1) it = vecinos2.erase(it);
+            else ++it;
+>>>>>>> extratemporal
         }
 
         r1->nuevoVecino(r2, costo);
@@ -68,13 +115,16 @@ void Red::mostrarRed()
     cout << endl;
 
     for (auto& par : routers)
-    {
         par.second->mostrarTabla(routers);
-    }
 }
 
-void Red::eliminarConexion(int id1, int id2)
+void Red::eliminarConexion(const string& letra1, const string& letra2)
 {
+    int id1 = letraAIndice(letra1);
+    if (id1 == -1) return;
+    int id2 = letraAIndice(letra2);
+    if (id2 == -1) return;
+
     Router* router1 = obtenerRouter(id1);
     Router* router2 = obtenerRouter(id2);
 
@@ -83,19 +133,15 @@ void Red::eliminarConexion(int id1, int id2)
     auto& vecinos1 = router1->vecinos;
     for (auto it = vecinos1.begin(); it != vecinos1.end(); )
     {
-        if (it->first->idRouter == id2)
-            it = vecinos1.erase(it);
-        else
-            ++it;
+        if (it->first->idRouter == id2) it = vecinos1.erase(it);
+        else ++it;
     }
 
     auto& vecinos2 = router2->vecinos;
     for (auto it = vecinos2.begin(); it != vecinos2.end(); )
     {
-        if (it->first->idRouter == id1)
-            it = vecinos2.erase(it);
-        else
-            ++it;
+        if (it->first->idRouter == id1) it = vecinos2.erase(it);
+        else ++it;
     }
 }
 
@@ -106,16 +152,17 @@ void Red::limpiarVecinos(int id)
         auto& vecinos = par.second->vecinos;
         for (auto it = vecinos.begin(); it != vecinos.end(); )
         {
-            if (it->first->idRouter == id)
-                it = vecinos.erase(it);
-            else
-                ++it;
+            if (it->first->idRouter == id) it = vecinos.erase(it);
+            else ++it;
         }
     }
 }
 
-void Red::eliminarRouter(int id)
+void Red::eliminarRouter(const string& letra)
 {
+    int id = letraAIndice(letra);
+    if (id == -1) return;
+
     if (routers.count(id))
     {
         limpiarVecinos(id);
@@ -126,9 +173,8 @@ void Red::eliminarRouter(int id)
 
 void Red::calcularCaminos(int origen)
 {
-    for (auto& par : routers) {
+    for (auto& par : routers)
         par.second->reinicio();
-    }
 
     dijkstra(obtenerRouter(origen));
 
@@ -137,18 +183,14 @@ void Red::calcularCaminos(int origen)
 
     routerOrigen->tablaCostos.clear();
     for (auto& par : routers)
-    {
         routerOrigen->tablaCostos[par.first] = par.second->distancia;
-    }
 }
 
 void Red::actualizarTablas()
 {
     cout << "\n=== Actualizando tablas de enrutamiento ===" << endl;
     for (auto& par : routers)
-    {
         calcularCaminos(par.first);
-    }
     cout << "Tablas actualizadas correctamente." << endl;
 }
 
@@ -171,9 +213,13 @@ void Red::cargarDesdeArchivo(const string& archivo)
 {
     ifstream f(archivo);
     if (!f.is_open())
+<<<<<<< HEAD
     {
         throw runtime_error("No se pudo abrir el archivo '" + archivo + "'");
     }
+=======
+        throw runtime_error("No se pudo abrir el archivo '" + archivo + "'");
+>>>>>>> extratemporal
 
     string linea;
     int numLinea = 0;
@@ -195,8 +241,13 @@ void Red::cargarDesdeArchivo(const string& archivo)
                     "Linea " + to_string(numLinea) +
                     ": falta el identificador del router."
                 );
+<<<<<<< HEAD
             int id = letraAIndice(token, numLinea);
             agregarRouter(id);
+=======
+            int id = letraAIndice(token, true, numLinea);
+            routers.count(id) == 0 && (routers[id] = new Router(id));
+>>>>>>> extratemporal
         }
         else if (tipo == "enlace")
         {
@@ -205,15 +256,56 @@ void Red::cargarDesdeArchivo(const string& archivo)
             if (!(ss >> t1 >> t2 >> costo))
                 throw runtime_error(
                     "Linea " + to_string(numLinea) +
+<<<<<<< HEAD
                     ": formato de enlace invalido. Se esperaba: enlace <letra> <letra> <costo>."
                 );
             int id1 = letraAIndice(t1, numLinea);
             int id2 = letraAIndice(t2, numLinea);
             conectar(id1, id2, costo);
+=======
+                    ": formato invalido. Se esperaba: enlace <letra> <letra> <costo>."
+                );
+            int id1 = letraAIndice(t1, true, numLinea);
+            int id2 = letraAIndice(t2, true, numLinea);
+
+            Router* r1 = obtenerRouter(id1);
+            Router* r2 = obtenerRouter(id2);
+            if (r1 && r2)
+            {
+                auto& v1 = r1->vecinos;
+                for (auto it = v1.begin(); it != v1.end(); )
+                {
+                    if (it->first->idRouter == id2) it = v1.erase(it);
+                    else ++it;
+                }
+                auto& v2 = r2->vecinos;
+                for (auto it = v2.begin(); it != v2.end(); )
+                {
+                    if (it->first->idRouter == id1) it = v2.erase(it);
+                    else ++it;
+                }
+                r1->nuevoVecino(r2, costo);
+                r2->nuevoVecino(r1, costo);
+            }
+>>>>>>> extratemporal
         }
     }
 
     f.close();
     actualizarTablas();
     cout << "Red cargada desde '" << archivo << "'" << endl;
+}
+
+void Red::calcularCaminos(const string& letra)
+{
+    int id = letraAIndice(letra);
+    if (id == -1) return;
+    calcularCaminos(id);
+}
+
+Router* Red::obtenerRouter(const string& letra)
+{
+    int id = letraAIndice(letra);
+    if (id == -1) return nullptr;
+    return obtenerRouter(id);
 }
