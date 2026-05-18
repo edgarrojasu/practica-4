@@ -1,26 +1,8 @@
 #include <iostream>
-#include <string>
 #include "Red.h"
 #include "menu.h"
 
 using namespace std;
-
-// Lee una letra de router desde cin.
-// Devuelve el indice (a=0, b=1, ...) o -1 si la entrada es invalida.
-int leerLetraRouter(const string& prompt)
-{
-    string entrada;
-    cout << prompt;
-    cin >> entrada;
-
-    if (entrada.size() != 1 || !isalpha((unsigned char)entrada[0]))
-    {
-        cout << "Error: el identificador de router debe ser una sola letra (a-z / A-Z)." << endl;
-        return -1;
-    }
-
-    return tolower((unsigned char)entrada[0]) - 'a';
-}
 
 int main()
 {
@@ -39,45 +21,38 @@ int main()
             {
                 case 1:
                 {
-                    int id = leerLetraRouter("Letra del router (a, b, c, ...): ");
-                    if (id == -1) break;
-                    red.agregarRouter(id);
+                    string letra;
+                    cout << "Letra del router (a, b, c, ...): ";
+                    cin >> letra;
+                    red.agregarRouter(letra);
                     red.actualizarTablas();
                     break;
                 }
                 case 2:
                 {
-                    int a = leerLetraRouter("Router 1 (letra): ");
-                    if (a == -1) break;
-                    int b = leerLetraRouter("Router 2 (letra): ");
-                    if (b == -1) break;
+                    string a, b;
                     int costo;
-                    cout << "Costo: ";
-                    if (!(cin >> costo))
-                    {
-                        cout << "Error: costo invalido." << endl;
-                        cin.clear();
-                        cin.ignore(10000, '\n');
-                        break;
-                    }
+                    cout << "Router 1 (letra): "; cin >> a;
+                    cout << "Router 2 (letra): "; cin >> b;
+                    cout << "Costo: ";            cin >> costo;
                     red.conectar(a, b, costo);
                     red.actualizarTablas();
                     break;
                 }
                 case 3:
                 {
-                    int id = leerLetraRouter("Letra del router a eliminar: ");
-                    if (id == -1) break;
-                    red.eliminarRouter(id);
+                    string letra;
+                    cout << "Router a eliminar (letra): ";
+                    cin >> letra;
+                    red.eliminarRouter(letra);
                     red.actualizarTablas();
                     break;
                 }
                 case 4:
                 {
-                    int a = leerLetraRouter("Router 1 (letra): ");
-                    if (a == -1) break;
-                    int b = leerLetraRouter("Router 2 (letra): ");
-                    if (b == -1) break;
+                    string a, b;
+                    cout << "Router 1 (letra): "; cin >> a;
+                    cout << "Router 2 (letra): "; cin >> b;
                     red.eliminarConexion(a, b);
                     red.actualizarTablas();
                     break;
@@ -89,10 +64,9 @@ int main()
                 }
                 case 6:
                 {
-                    int origen = leerLetraRouter("Origen (letra): ");
-                    if (origen == -1) break;
-                    int destino = leerLetraRouter("Destino (letra): ");
-                    if (destino == -1) break;
+                    string origen, destino;
+                    cout << "Origen (letra): ";  cin >> origen;
+                    cout << "Destino (letra): "; cin >> destino;
                     red.calcularCaminos(origen);
                     imprimirCamino(red.obtenerRouter(destino));
                     break;
