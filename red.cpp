@@ -21,6 +21,25 @@ void Red::conectar(int id1, int id2, int costo)
 
     if (r1 && r2)
     {
+        // Eliminar conexion previa entre estos dos routers si existia
+        auto& vecinos1 = r1->vecinos;
+        for (auto it = vecinos1.begin(); it != vecinos1.end(); )
+        {
+            if (it->first->idRouter == id2)
+                it = vecinos1.erase(it);
+            else
+                ++it;
+        }
+
+        auto& vecinos2 = r2->vecinos;
+        for (auto it = vecinos2.begin(); it != vecinos2.end(); )
+        {
+            if (it->first->idRouter == id1)
+                it = vecinos2.erase(it);
+            else
+                ++it;
+        }
+
         r1->nuevoVecino(r2, costo);
         r2->nuevoVecino(r1, costo);
     }
@@ -133,17 +152,35 @@ void Red::actualizarTablas()
     cout << "Tablas actualizadas correctamente." << endl;
 }
 
+// Convierte una cadena leida del archivo a indice de router (a=0, b=1, ...).
+// Lanza runtime_error si la cadena no es exactamente una letra.
+static int letraAIndice(const string& token, int numLinea)
+{
+    if (token.size() != 1 || !isalpha((unsigned char)token[0]))
+    {
+        throw runtime_error(
+            "Linea " + to_string(numLinea) +
+            ": identificador de router invalido '" + token +
+            "'. Se esperaba una sola letra (a-z / A-Z)."
+        );
+    }
+    return tolower((unsigned char)token[0]) - 'a';
+}
+
 void Red::cargarDesdeArchivo(const string& archivo)
 {
     ifstream f(archivo);
     if (!f.is_open())
     {
-        throw runtime_error("No se pudo abrir el archivo");
+        throw runtime_error("No se pudo abrir el archivo '" + archivo + "'");
     }
 
     string linea;
+    int numLinea = 0;
+
     while (getline(f, linea))
     {
+        ++numLinea;
         if (linea.empty() || linea[0] == '#') continue;
 
         istringstream ss(linea);
@@ -152,14 +189,26 @@ void Red::cargarDesdeArchivo(const string& archivo)
 
         if (tipo == "router")
         {
-            int id;
-            ss >> id;
+            string token;
+            if (!(ss >> token))
+                throw runtime_error(
+                    "Linea " + to_string(numLinea) +
+                    ": falta el identificador del router."
+                );
+            int id = letraAIndice(token, numLinea);
             agregarRouter(id);
         }
         else if (tipo == "enlace")
         {
-            int id1, id2, costo;
-            ss >> id1 >> id2 >> costo;
+            string t1, t2;
+            int costo;
+            if (!(ss >> t1 >> t2 >> costo))
+                throw runtime_error(
+                    "Linea " + to_string(numLinea) +
+                    ": formato de enlace invalido. Se esperaba: enlace <letra> <letra> <costo>."
+                );
+            int id1 = letraAIndice(t1, numLinea);
+            int id2 = letraAIndice(t2, numLinea);
             conectar(id1, id2, costo);
         }
     }
